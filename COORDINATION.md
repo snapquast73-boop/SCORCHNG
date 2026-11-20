@@ -79,3 +79,4 @@ These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/fl
 | Verification follow-up | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
 | Verify full-date live review feeds and preserve parallel repair | in progress | b7be163c | tools/browser/site.spec.mjs, docs/VERIFICATION.md, flagged.html, COORDINATION.md | [PR #5](https://github.com/snapquast73-boop/SCORCHNG/pull/5), [retained repair PR #4](https://github.com/snapquast73-boop/SCORCHNG/pull/4) |
+- A normal `git pull --rebase` tried to flatten the newly integrated parallel-session merge and conflicted on its historical coordination claim. Aborted that rebase (preserving the merge and both sessions’ work), then successfully ran `git pull --rebase=merges`. Subsequent pushes preserve merge topology.
