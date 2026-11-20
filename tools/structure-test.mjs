@@ -8,7 +8,7 @@ test('every local HTML asset/link exists, including case-sensitive project paths
  for (const page of pages) {
   const text = fs.readFileSync(page, 'utf8');
   for (const match of text.matchAll(/(?:src|href)="([^"]+)"/g)) {
-   const url = match[1]; if (/^(?:https?:|data:|#|mailto:)/.test(url)) continue;
+   const url = page === '404.html' ? match[1].replace(/^\/SCORCHNG\//, '') : match[1]; if (/^(?:https?:|data:|#|mailto:)/.test(url)) continue;
    assert.ok(!url.startsWith('/'), `${page}: absolute path breaks project Pages: ${url}`);
    assert.ok(fs.existsSync(path.join(path.dirname(page), url.split(/[?#]/)[0])), `${page}: missing ${url}`);
   }

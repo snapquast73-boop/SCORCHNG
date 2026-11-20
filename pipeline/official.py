@@ -63,7 +63,10 @@ def parse(html):
             seen.add(key)
             rows.append({'season': year, 'id': match.group(1), 'text': text, 'source': SOURCE})
     if not rows:
-        raise ValueError('No numbered official paragraphs with a season heading found. Parser review required.')
+        candidates = [b[:400] for b in parser.blocks if re.search(r'Regular Season|001\.|Swanson', b)][:6]
+        excerpts = re.findall(r'.{0,100}(?:Regular Season|001\.|Swanson).{0,200}', html)[:6]
+        detail = json.dumps({'blocks': candidates, 'sourceExcerpts': excerpts}, ensure_ascii=False)
+        raise ValueError('No numbered official paragraphs with a season heading found. Parser review required. ' + detail)
     return rows
 
 
