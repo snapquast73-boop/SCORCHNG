@@ -48,7 +48,7 @@ PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pul
 - Published official-text dataset was independently fetched from the live site after deployment; collection timestamp `2026-11-20T22:30:03.373353+00:00`, with per-row MLB source links. The deployed workflow confirms 257 official paragraphs.
 - The live home page executed its runtime and showed the expected no-games state for 2026-11-20, consistent with the official schedule fetched earlier. This is not a failed scoreboard or a fabricated zero-score game.
 - Original sites were never modified. No credentials or manual user action were requested.
-- Follow-up on the same assigned branch records these results and makes the verified workflow the sole Pages source, avoiding a race with the pre-existing legacy builder. The workflow uses its declared `pages: write` permission, not user-supplied credentials. Its deployment step rechecks the published site.
+- PR #3 attempted to make the workflow the sole Pages source. That settings change did not succeed; the later repair retains legacy configuration and restores direct artifact publication. See the correction and verified repair below.
 
 | Published review item | Status | Owner | File scope | Official / authoritative evidence |
 | --- | --- | --- | --- | --- |
@@ -65,7 +65,7 @@ These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/fl
 - The sandbox's authenticated REST API quota was exhausted during final checks. GraphQL check queries and git transport remain usable. This is not an authentication failure and does not require the user to reconnect or provide credentials. The Actions job uses its own declared permissions.
 | Follow-up task | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
-| Restore the verified Pages deployment path after the settings-update regression | in progress | 2824cb82 | .github/workflows/pages.yml, COORDINATION.md | [Failed deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801/job/136612418083#step:4:9), [Last successful deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829378311) |
+| Restore the verified Pages deployment path after the settings-update regression | done | 2824cb82 | .github/workflows/pages.yml, COORDINATION.md | [Failed deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801/job/136612418083#step:4:9), [Last successful deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829378311) |
 
 - Follow-up confirmed that [PR #3](https://github.com/snapquast73-boop/SCORCHNG/pull/3) merged, but its [main workflow](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801) failed at the newly added settings-update step before deploying. The earlier note about a single publisher was an intention, not a verified settings change. This patch removes that step and restores the deployment sequence that previously passed. [GitHub Pages REST documentation](https://docs.github.com/en/rest/pages/pages#update-information-about-a-github-pages-site) distinguishes updating site settings from creating a deployment.
 - Local tests passed (16 Node, 5 Python), the static build passed, and the failed run's verification job independently passed and collected 257 paragraphs from the [official MLB log](https://www.mlb.com/official-information/scoring-changes). The live replay and scoring pages were reachable; this follow-up changes no data or application behavior.
@@ -78,5 +78,14 @@ These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/fl
 
 | Verification follow-up | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
-| Verify full-date live review feeds and preserve parallel repair | in progress | b7be163c | tools/browser/site.spec.mjs, docs/VERIFICATION.md, flagged.html, COORDINATION.md | [PR #5](https://github.com/snapquast73-boop/SCORCHNG/pull/5), [retained repair PR #4](https://github.com/snapquast73-boop/SCORCHNG/pull/4) |
+| Verify full-date live review feeds and preserve parallel repair | done | b7be163c | tools/browser/site.spec.mjs, docs/VERIFICATION.md, flagged.html, COORDINATION.md | [PR #5](https://github.com/snapquast73-boop/SCORCHNG/pull/5), [retained repair PR #4](https://github.com/snapquast73-boop/SCORCHNG/pull/4) |
 - A normal `git pull --rebase` tried to flatten the newly integrated parallel-session merge and conflicted on its historical coordination claim. Aborted that rebase (preserving the merge and both sessions’ work), then successfully ran `git pull --rebase=merges`. Subsequent pushes preserve merge topology.
+
+## Final independent verification of the combined repair
+- Session b7be163c independently checked the integrated main commit `3b4d527772287d30a0d3d23b2f37017d9db105cd` through GitHub’s GraphQL check results. The repair owned by session 2824cb82 is **done**: [PR #4 merged](https://github.com/snapquast73-boop/SCORCHNG/pull/4), and its [main verification, Pages deployment and published-resource check all succeeded](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44830380029). Credit and ownership remain with that session; this session changed none of its workflow code.
+- [PR #5 verification run](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44830620802) passed the expanded browser scenario: real selected-date schedule, game details, all 15 review-feed game requests and source-linked error rows. Offline tests remain 16 Node + 5 Python; there are seven Chromium scenarios (six synthetic, one expanded live-source scenario).
+- PR #5 publishes these final verification records and the nonblocking publisher-ordering review note. The final artifact deployment repeats published HTML, asset, navigation and official-row source checks.
+
+| Additional published review item | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Potential legacy/custom Pages ordering risk; workflow owner notified | needs review | b7be163c (review note only) | flagged.html | [Same-commit custom publication](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829378311), [legacy publication](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829377907) |
