@@ -64,6 +64,10 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
+      - name: Use the verified workflow as the single Pages publishing source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method PUT "repos/$GITHUB_REPOSITORY/pages" -f build_type=workflow --jq '{build_type, html_url}'
       - name: Deploy verified site
         id: deployment
         uses: actions/deploy-pages@v5

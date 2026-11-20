@@ -4,7 +4,7 @@ Session: `b7be163c` (Arena assigned branch `arena/b7be163c-scorchng`). All work 
 
 | Task | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
-| Restore missing application, audit and integrate deployment | in progress | b7be163c | assets/, tools/, .github/, docs/, all root HTML, README.md, COORDINATION.md, package*.json, playwright.config.mjs, .gitignore | [Uploaded repository](https://github.com/snapquast73-boop/SCORCHNG/tree/9705bf468bba9ccb808d8f4c21a06cd1e9c87032) |
+| Restore missing application, audit and integrate deployment | done | b7be163c | assets/, tools/, .github/, docs/, all root HTML, README.md, COORDINATION.md, package*.json, playwright.config.mjs, .gitignore | [Uploaded repository](https://github.com/snapquast73-boop/SCORCHNG/tree/9705bf468bba9ccb808d8f4c21a06cd1e9c87032) |
 
 ## Initial findings — 2026-11-20
 - Uploaded repository contains only ten root files. All referenced CSS/JavaScript, data, pipeline and tests are absent.
@@ -39,3 +39,21 @@ PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pul
 - Local server and corrupted-browser-log handling were reviewed and regression tested. Shared legacy server merges remain unused and uncertified; public writes default to disabled.
 - No external-link completeness claim is made. Every local HTML dependency resolves; known unavailable original-repository links remain intentionally visible as review evidence.
 - Missing model/history, exact upstream parity, complete historical error coverage and unsupported run/pitching attribution are published at `flagged.html` as **needs review**, not blockers and not verified facts.
+
+## Published result — 2026-11-20
+- PR **#2 merged successfully** at 2026-11-20T22:29:30Z: https://github.com/snapquast73-boop/SCORCHNG/pull/2
+- Merge commit: `99991aadaccc128efbfb0ad38758af752b11383e`.
+- Main verification and Pages deployment **succeeded**, including the post-publication HTML/asset/navigation/source-row check: https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829378311
+- Live site: https://snapquast73-boop.github.io/SCORCHNG/
+- Published official-text dataset was independently fetched from the live site after deployment; collection timestamp `2026-11-20T22:30:03.373353+00:00`, with per-row MLB source links. The deployed workflow confirms 257 official paragraphs.
+- The live home page executed its runtime and showed the expected no-games state for 2026-11-20, consistent with the official schedule fetched earlier. This is not a failed scoreboard or a fabricated zero-score game.
+- Original sites were never modified. No credentials or manual user action were requested.
+- Follow-up on the same assigned branch records these results and makes the verified workflow the sole Pages source, avoiding a race with the pre-existing legacy builder. The workflow uses its declared `pages: write` permission, not user-supplied credentials. Its deployment step rechecks the published site.
+
+| Published review item | Status | Owner | File scope | Official / authoritative evidence |
+| --- | --- | --- | --- | --- |
+| Exact upstream parity and unavailable original repositories | needs review | b7be163c | flagged.html (published) | [Original documented repository](https://github.com/buffedlizard55-lab/MLB-Live-PBP) |
+| Model, historical captures, unsupported historical metrics and season completeness | needs review | b7be163c | flagged.html (published) | [Immutable initial tree](https://github.com/snapquast73-boop/SCORCHNG/tree/9705bf468bba9ccb808d8f4c21a06cd1e9c87032) |
+| Play reconciliation, pitching-only attribution and run-risk logic | needs review | b7be163c | flagged.html (published) | [MLB official rulings](https://www.mlb.com/official-information/scoring-changes) |
+
+These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/flagged.html and do not block the working site. No unsupported values are filled in.
