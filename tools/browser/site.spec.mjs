@@ -54,7 +54,7 @@ test('flagged page has sources and collection status on mobile', async ({ page }
 });
 test('real official feeds work cross-origin in the browser', async ({ page }) => {
  test.skip(!process.env.LIVE_BROWSER, 'Official network test is executed in GitHub Actions');
- test.setTimeout(90000);
+ test.setTimeout(180000);
  const errors = []; page.on('pageerror', e => errors.push(e.message));
  await page.goto('index.html?date=2026-09-11');
  await expect(page.locator('.game-card')).toHaveCount(15, { timeout: 40000 });
@@ -63,4 +63,10 @@ test('real official feeds work cross-origin in the browser', async ({ page }) =>
  await expect(page.locator('#plays-wrap .play-row').first()).toBeVisible();
  expect(errors).toEqual([]);
  await page.screenshot({ path: 'test-results/official-game.png', fullPage: true });
+ await page.goto('reviews.html?date=2026-09-11');
+ await expect(page.locator('#status-line')).toContainText('15/15 game feeds loaded', { timeout: 120000 });
+ await page.getByRole('button', { name: '🎯 Error Watch', exact: true }).click();
+ await expect(page.locator('.feed-row').first()).toBeVisible();
+ await expect(page.locator('.feed-row').first().locator('a[href^="https://statsapi.mlb.com/"]')).toHaveCount(1);
+ expect(errors).toEqual([]);
 });
