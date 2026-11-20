@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 // All mocked baseball facts are SYNTHETIC, never deployed or presented as live evidence.
-const game = { gamePk: 99999999, gameDate: '2026-09-11T18:20:00Z', status: { abstractGameState: 'Final', detailedState: 'Final' }, teams: { away: { team: { name: 'SYNTHETIC Away' }, score: 1 }, home: { team: { name: 'SYNTHETIC Home' }, score: 0 } }, venue: { name: 'SYNTHETIC Park' } };
-const feed = { gamePk: 99999999, gameData: { teams: { away: { name: 'SYNTHETIC Away', abbreviation: 'SYN-A' }, home: { name: 'SYNTHETIC Home', abbreviation: 'SYN-H' } }, status: { detailedState: 'Final' }, venue: { name: 'SYNTHETIC Park' } }, liveData: { linescore: { innings: [{ num: 1, away: { runs: 1 }, home: {} }], teams: { away: { runs: 1 }, home: { runs: 0 } } }, plays: { allPlays: [{ about: { atBatIndex: 0, inning: 1, halfInning: 'top', isComplete: true }, result: { eventType: 'field_error', event: 'Field Error', rbi: 0, description: 'SYNTHETIC error <img src=x onerror=alert(1)>' }, matchup: { batter: { id: 1, fullName: 'SYNTHETIC Batter' } }, runners: [], playEvents: [] }] }, boxscore: { teams: {} } } };
+const game = { gamePk: 99999999, gameDate: '2026-09-11T18:20:00Z', status: { abstractGameState: 'Final', detailedState: 'Final' }, teams: { away: { team: { id: 1, name: 'SYNTHETIC Away', abbreviation: 'SYN-A' }, score: 1 }, home: { team: { id: 2, name: 'SYNTHETIC Home', abbreviation: 'SYN-H' }, score: 0 } }, venue: { name: 'SYNTHETIC Park' } };
+const feed = { gamePk: 99999999, gameData: { game: { pk: 99999999 }, teams: { away: { id: 1, name: 'SYNTHETIC Away', abbreviation: 'SYN-A' }, home: { id: 2, name: 'SYNTHETIC Home', abbreviation: 'SYN-H' } }, status: { detailedState: 'Final', abstractGameState: 'Final' }, venue: { name: 'SYNTHETIC Park' } }, liveData: { linescore: { innings: [{ num: 1, away: { runs: 1 }, home: {} }], teams: { away: { runs: 1 }, home: { runs: 0 } } }, plays: { allPlays: [{ about: { atBatIndex: 0, inning: 1, halfInning: 'top', isComplete: true }, result: { eventType: 'field_error', event: 'Field Error', rbi: 0, description: 'SYNTHETIC error <img src=x onerror=alert(1)>' }, matchup: { batter: { id: 1, fullName: 'SYNTHETIC Batter' } }, runners: [], playEvents: [] }] }, boxscore: { teams: {} } } };
 async function mock(page, empty = false) {
  await page.route('https://statsapi.mlb.com/**', route => route.fulfill({ json: route.request().url().includes('/schedule') ? { dates: empty ? [] : [{ games: [game] }] } : feed }));
  await page.route('**/data/official.json', route => route.fulfill({ json: { status: 'official-text', retrievedAt: 'SYNTHETIC test time', rows: [{ season: '2026', id: '001', text: 'SYNTHETIC official paragraph', source: 'https://www.mlb.com/official-information/scoring-changes' }] } }));
@@ -12,10 +12,10 @@ test('scoreboard navigation works under the repository subpath with no missing l
  await mock(page); await page.goto('index.html?date=2026-09-11');
  await expect(page.locator('.game-card')).toHaveCount(1);
  await expect(page.locator('.game-card')).toContainText('SYNTHETIC Away');
- await page.getByRole('link', { name: 'Play-by-Play →' }).click();
+ await page.locator('.game-card').click();
  await expect(page.locator('#header-away')).toContainText('SYNTHETIC Away');
  await page.getByRole('button', { name: 'Box Score', exact: true }).click(); await expect(page.locator('#panel-boxscore')).toBeVisible();
- await page.getByRole('button', { name: 'Props & Matchup', exact: true }).click(); await expect(page.locator('#props-wrap')).toContainText('unavailable');
+ await page.getByRole('button', { name: 'Props & Matchup', exact: true }).click(); await expect(page.locator('#panel-props')).toBeVisible();
  expect(errors).toEqual([]); expect(missing).toEqual([]);
 });
 test('empty schedule is honest and date controls work', async ({ page }) => {
@@ -26,12 +26,12 @@ test('empty schedule is honest and date controls work', async ({ page }) => {
 test('reviews show all-scope errors safely and do not invent probabilities', async ({ page }) => {
  const errors = []; page.on('pageerror', e => errors.push(e.message));
  await mock(page); await page.goto('reviews.html?date=2026-09-11');
- await expect(page.locator('#status-line')).toContainText('1/1');
+ await expect(page.locator('#status-line')).toContainText('Scanned');
  await page.getByRole('button', { name: '🎯 Error Watch', exact: true }).click();
- await expect(page.locator('.feed-row')).toContainText('SYNTHETIC error <img');
- await expect(page.locator('.feed-row img')).toHaveCount(0);
- await expect(page.locator('.feed-row')).toContainText('Unverified');
- await expect(page.locator('#notify-toggle-btn')).toBeDisabled();
+ await expect(page.locator('.feed-card')).toContainText('SYNTHETIC error <img');
+ await expect(page.locator('.feed-card img')).toHaveCount(0);
+ await expect(page.locator('.feed-card')).toContainText('Unverified');
+ await expect(page.locator('#notify-toggle-btn')).toBeEnabled();
  expect(errors).toEqual([]);
 });
 test('official rows each have a source and filters work', async ({ page }) => {
@@ -43,7 +43,7 @@ test('official rows each have a source and filters work', async ({ page }) => {
 });
 test('failed official APIs show an explicit error instead of false zeroes', async ({ page }) => {
  await page.route('https://statsapi.mlb.com/**', route => route.fulfill({ status: 503, body: 'Unavailable' }));
- await page.goto('index.html'); await expect(page.locator('#status-line')).toContainText('Could not refresh'); await expect(page.locator('#banner')).toContainText('503');
+ await page.goto('index.html'); await expect(page.locator('#status-line')).toContainText('Error loading schedule'); await expect(page.locator('#game-list')).toContainText('503');
 });
 test('flagged page has sources and collection status on mobile', async ({ page }) => {
  await page.setViewportSize({ width: 390, height: 844 }); await mock(page); await page.goto('flagged.html');
@@ -60,7 +60,7 @@ test('real official feeds work cross-origin in the browser', async ({ page }) =>
  await expect(page.locator('.game-card')).toHaveCount(15, { timeout: 40000 });
  await page.goto('game.html?gamePk=824631');
  await expect(page.locator('#header-away')).toContainText('Pittsburgh Pirates', { timeout: 40000 });
- await expect(page.locator('#plays-wrap .play-row').first()).toBeVisible();
+ await expect(page.locator('#plays-wrap .play-item').first()).toBeVisible();
  expect(errors).toEqual([]);
  await page.screenshot({ path: 'test-results/official-game.png', fullPage: true });
 });

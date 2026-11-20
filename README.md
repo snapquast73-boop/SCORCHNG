@@ -9,21 +9,28 @@
 
 The initial upload contained ten root files, but none of the assets, datasets, pipelines or tests
 referenced by those files. Both documented upstream repositories returned HTTP 404 during this
-session. The supplied HTML shells are retained; the missing runtime is reimplemented against
-official MLB endpoints. **Exact visual/functional parity with the unavailable upstream is unverified.**
+session. The supplied HTML shells are retained. Session 3123a9c4 restored the full runtime by
+porting the working [LIVPBP2](https://snapquast73-boop.github.io/LIVPBP2/reviews.html) /
+[POSTSSNALRT](https://snapquast73-boop.github.io/POSTSSNALRT/reviews.html) sites (same owner) and
+merging SCORCHNG's scoring-changes extensions. **Exact visual/functional parity with the
+unavailable upstream is unverified.**
 
 Working capabilities:
-- Date-based scoreboard, live/final/upcoming filters, automatic refresh and game navigation.
-- Game play-by-play, linescore, batting/pitching box score and exposed review/pending markers.
+- Full scoreboard: hydrated schedule with probable pitchers, decisions, review flags, logos,
+  live status sweep and game navigation.
+- Full game view: live panel (count/outs/runners/on-deck), linescore, batting/pitching box
+  score, Props hit forecast and Challenges & Reviews with score tracker.
+- Full Replay Feed: manager challenges, crew-chief/umpire reviews, boundary calls, ABS pitch
+  challenges, under-review strip, runs-at-risk, score tracker and challenges-remaining counters.
 - All-scope error plays for a selected date, browser-local observed batting R/H/RBI changes and
   a separate silent hit → error tab. Missing values are blank, never default zeroes.
-- Official scoring-change paragraphs, with MLB’s wording and an official source link on every row.
+- Official scoring-change paragraphs, with MLB's wording and an official source link on every row.
 - Automated verification, scheduled official-text collection and GitHub Pages publication.
 
-**Unavailable and flagged, not simulated:** historical first-call captures, fitted model,
-forecasts, inherited historical numeric claims, full-season error scans, pitching-only change
-detection and run-at-risk alerts. Browser logs are local, not shared across visitors. Old pending
-markers in a current feed are not proof of an active unresolved review.
+**Unavailable and flagged, not simulated:** historical first-call captures, fitted overturn model,
+inherited historical numeric claims, full-season error scans and pitching-only change detection.
+Browser logs are local, not shared across visitors. Old pending markers in a current feed are
+not proof of an active unresolved review.
 
 See [verification scope and official sources](docs/VERIFICATION.md), the public
 [review page](flagged.html), and [coordination / deployment log](COORDINATION.md).

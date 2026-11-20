@@ -70,3 +70,10 @@ These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/fl
 - LIVPBP2 chosen as port base: same raindrop chime as SCORCHNG (no sound-lab dependency), same flagged.html name, largest game.js/props.js (two-sided hit forecast).
 - SCORCHNG-specific features to preserve: scoring.html + scoring-page.js (official paragraphs), Error Watch / Hit→Error / Pitching / Other tabs, R/H/RBI attribution (Reviews.delta), pipeline/official.py, tools, workflow.
 - Port strategy: union APIs — LIVPBP2 runtime + SCORCHNG helpers/extensions. No values invented; all data from official MLB StatsAPI.
+
+### Restoration complete (session 3123a9c4)
+- Ported full LIVPBP2 runtime (api/ui/reviews/feed-log/scoreboard/reviews-feed/game/props/style) with union compat layers preserving SCORCHNG scoring extensions (Reviews.errorPlay/snapshot/delta/category/extract, FeedLog.load/save/observe, UI helpers for scoring-page).
+- Added SCORCHNG tabs (Error Watch, Hit → Error, Pitching, Other) to Replay Feed; R/H/RBI attribution preserved; hit → error stays silent.
+- Added props.js (two-sided hit forecast) to game.html; preconnect links to all pages.
+- Updated flagged.html, docs/VERIFICATION.md, README.md, tools tests (20 Node + 5 Python pass), browser tests.
+- `npm test` passes (20/20 Node, 5/5 Python); `node tools/build.mjs` succeeds. Live browser + MLB checks run in CI.
