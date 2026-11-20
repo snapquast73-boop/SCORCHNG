@@ -57,3 +57,16 @@ PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pul
 | Play reconciliation, pitching-only attribution and run-risk logic | needs review | b7be163c | flagged.html (published) | [MLB official rulings](https://www.mlb.com/official-information/scoring-changes) |
 
 These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/flagged.html and do not block the working site. No unsupported values are filled in.
+
+## Session 3123a9c4 — Restore full functionality from working references
+
+| Task | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Restore full runtime parity with LIVPBP2/POSTSSNALRT working sites | in progress | 3123a9c4 | assets/js/api.js, assets/js/ui.js, assets/js/reviews.js, assets/js/feed-log.js, assets/js/scoreboard.js, assets/js/reviews-feed.js, assets/js/game.js, assets/js/props.js (new), assets/css/style.css, game.html, index.html, reviews.html, flagged.html, tools/*-test.mjs, docs/VERIFICATION.md, README.md, COORDINATION.md | [LIVPBP2 reviews](https://snapquast73-boop.github.io/LIVPBP2/reviews.html) · [POSTSSNALRT reviews](https://snapquast73-boop.github.io/POSTSSNALRT/reviews.html) · [SCORCHNG live](https://snapquast73-boop.github.io/SCORCHNG/) |
+
+### Findings (2026-11-20, session 3123a9c4)
+- SCORCHNG live site works but is a minimal reimplementation (34KB JS total) vs full references (LIVPBP2 ~135KB, POSTSSNALRT ~115KB). Missing: ABS/boundary/under-review/runs-at-risk tabs, challenges-remaining counters, score tracker, props forecast, probable pitchers/decisions/logos, desktop notifications, full game view.
+- All three repos share identical DOM IDs in index/game/reviews HTML, so the full runtime can be ported without shell changes (except adding props.js + preconnect).
+- LIVPBP2 chosen as port base: same raindrop chime as SCORCHNG (no sound-lab dependency), same flagged.html name, largest game.js/props.js (two-sided hit forecast).
+- SCORCHNG-specific features to preserve: scoring.html + scoring-page.js (official paragraphs), Error Watch / Hit→Error / Pitching / Other tabs, R/H/RBI attribution (Reviews.delta), pipeline/official.py, tools, workflow.
+- Port strategy: union APIs — LIVPBP2 runtime + SCORCHNG helpers/extensions. No values invented; all data from official MLB StatsAPI.
