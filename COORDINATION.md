@@ -23,3 +23,12 @@ Session: `b7be163c` (Arena assigned branch `arena/b7be163c-scorchng`). All work 
 | Harden retained local server and nested 404 handling | in progress | b7be163c | server.mjs, 404.html; tests under already-owned tools/ | [Uploaded server](https://github.com/snapquast73-boop/SCORCHNG/blob/9705bf468bba9ccb808d8f4c21a06cd1e9c87032/server.mjs) |
 
 PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pull/2. This is not yet a completion/merge claim. Offline checks currently pass (12 Node tests, 4 Python tests); live-source and browser checks run in CI.
+
+## Verified integration progress
+- CI run https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44828843230 passed offline checks, real MLB API checks and seven Chromium scenarios, including a real cross-origin MLB schedule/game browser check.
+- Its official collector annotation confirms **257 official paragraphs** from https://www.mlb.com/official-information/scoring-changes. HTML list ordinals are read from `<ol>` / `<li>` semantics; no missing game dates, stats or model values are inferred. These are published official text, not independently reconciled play classifications.
+- Local server hardening checks pass: private repository files cannot be served, malformed encodings return an error, shared POST writes default to disabled, and project-subpath routes work.
+
+| Additional task | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Align inherited agent instructions with restored verified runtime | in progress | b7be163c | AGENTS.md; README.md remains within original claim | [Uploaded instructions and missing-file references](https://github.com/snapquast73-boop/SCORCHNG/blob/9705bf468bba9ccb808d8f4c21a06cd1e9c87032/AGENTS.md) |
