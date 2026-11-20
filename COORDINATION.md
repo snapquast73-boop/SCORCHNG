@@ -57,3 +57,53 @@ PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pul
 | Play reconciliation, pitching-only attribution and run-risk logic | needs review | b7be163c | flagged.html (published) | [MLB official rulings](https://www.mlb.com/official-information/scoring-changes) |
 
 These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/flagged.html and do not block the working site. No unsupported values are filled in.
+
+## CRITICAL CORRECTION — session `ad150fa7` — 2026-11-20T22:3x
+
+**The previous sessions' premise was wrong.** `buffedlizard55-lab/MLB-Live-PBP` and
+`buffedlizard55-lab/MLBSCORINGCHANGE` are not real, reachable upstream repositories (confirmed
+404 again via `api.github.com/repos/buffedlizard55-lab/...`), but the task owner's own GitHub
+account (`snapquast73-boop`) hosts **two live sibling repositories that are the real, currently
+working reference implementations**, confirmed via `api.github.com/repos/snapquast73-boop/LIVPBP2`
+and `.../POSTSSNALRT` (both `200`, both `has_pages: true`):
+
+- <https://github.com/snapquast73-boop/LIVPBP2> — live at
+  <https://snapquast73-boop.github.io/LIVPBP2/reviews.html> — direct ancestor of SCORCHNG.
+  Byte-level diff of the original SCORCHNG upload (commit `9705bf4`) against LIVPBP2's current
+  `index.html` / `game.html` / `reviews.html` / `404.html` / `server.mjs` shows they are the
+  **same files**, down to matching element IDs, button titles and copy, with SCORCHNG's upload
+  simply missing LIVPBP2's later `preconnect`/`flagged.html` additions and adding its own
+  `scoring.html` nav link + `assets/js/scoring-model.js` script tag. This is conclusive: SCORCHNG
+  is a feature-branch snapshot of LIVPBP2 (started on the user's own
+  ["reverse engineer this site ... copy the entire repo"](README.md) charter), **not** a copy of
+  an unrelated, vanished third-party repo.
+- <https://github.com/snapquast73-boop/POSTSSNALRT> — live at
+  <https://snapquast73-boop.github.io/POSTSSNALRT/reviews.html> — a second, independently
+  diverged sibling (different alert-sound design: `sound-lab.html`, `assets/audio/`), confirmed
+  **not** the source of SCORCHNG's `scoring.html`/Error-Watch/Hit→Error text either (`grep -rn
+  "Error Watch"` returns no hits in either sibling repo — that part of the charter was never
+  built in any sibling and remains a from-scratch, no-reference-available implementation, same
+  as the prior session already flagged).
+- The previously merged restoration (PR #3, session `b7be163c`) rewrote the uploaded HTML shells
+  (shorter footers, dropped `assets/js/props.js`/`scoring-model.js` from `game.html`, reworded
+  `reviews.html`'s explanatory footer) and shipped a **from-scratch, ~470-line stub** (`api.js`
+  40 lines vs LIVPBP2's 216, `reviews.js` 62 vs 643, `style.css` **1 line** vs 624) that does not
+  implement most of the UI the uploaded shell's own HTML references (sound/notify toggle
+  behaviour, countdown, live dot, active-review strip, feed tabs, box score, props). This is the
+  "some information got lost" the task owner observed — confirmed by direct line-count/structure
+  comparison, not supposition.
+
+**Correction in progress (file scope below).** Plan: restore the *original uploaded* HTML shells
+verbatim (only additive change: a `flagged.html` link), replace the stub CSS/JS with LIVPBP2's
+verified, tested implementation (adapted: GitHub Pages base path, localStorage key prefix per
+`AGENTS.md` rule 10), and re-implement the SCORCHNG-only scoring-change model/Error Watch/Hit→Error
+layer on top of that restored base using the already-built `pipeline/official.py` (real MLB
+official-text scrape) rather than fabricated data.
+
+| Task | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Restore app from verified sibling repos (LIVPBP2 base) + rebuild scoring-change layer on top | in progress | ad150fa7 | index.html, reviews.html, game.html, 404.html, scoring.html, server.mjs, assets/, docs/, tools/, pipeline/, README.md, AGENTS.md, flagged.html, package*.json, playwright.config.mjs, COORDINATION.md (append only) | [LIVPBP2 repo](https://github.com/snapquast73-boop/LIVPBP2), [LIVPBP2 Pages](https://snapquast73-boop.github.io/LIVPBP2/reviews.html), [POSTSSNALRT repo](https://github.com/snapquast73-boop/POSTSSNALRT), [POSTSSNALRT Pages](https://snapquast73-boop.github.io/POSTSSNALRT/reviews.html) |
+
+Not touching `.github/workflows/pages.yml`, which session `2824cb82` claimed for a deploy-regression
+follow-up — see that session's entry above. Will re-check Pages deploy health after that session's
+fix lands, before final integration/merge.
