@@ -48,4 +48,4 @@ The retained local server now hides private paths, safely rejects malformed path
 
 Deployment and PR results are recorded in [COORDINATION.md](../COORDINATION.md).
 
-The existing legacy Pages configuration is supported without administration changes. Before the verified artifact is deployed, the workflow waits for any legacy publisher for the same commit to finish, preventing that builder from overwriting generated official text.
+The existing legacy Pages configuration is retained without administration changes. A second session restored the known-working direct artifact deployment after a settings-update attempt failed. A possible ordering race with the legacy builder is recorded as a review item and delegated to that session; no ordering barrier is claimed as implemented.

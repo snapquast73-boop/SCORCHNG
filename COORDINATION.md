@@ -4,7 +4,7 @@ Session: `b7be163c` (Arena assigned branch `arena/b7be163c-scorchng`). All work 
 
 | Task | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
-| Restore missing application, audit and integrate deployment | in progress | b7be163c | assets/, tools/, .github/, docs/, all root HTML, README.md, COORDINATION.md, package*.json, playwright.config.mjs, .gitignore | [Uploaded repository](https://github.com/snapquast73-boop/SCORCHNG/tree/9705bf468bba9ccb808d8f4c21a06cd1e9c87032) |
+| Restore missing application, audit and integrate deployment | done | b7be163c | assets/, tools/, .github/, docs/, all root HTML, README.md, COORDINATION.md, package*.json, playwright.config.mjs, .gitignore | [Uploaded repository](https://github.com/snapquast73-boop/SCORCHNG/tree/9705bf468bba9ccb808d8f4c21a06cd1e9c87032) |
 
 ## Initial findings — 2026-11-20
 - Uploaded repository contains only ten root files. All referenced CSS/JavaScript, data, pipeline and tests are absent.
@@ -60,6 +60,22 @@ These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/fl
 
 ## Post-publication deployment follow-up
 - PR #3 merged successfully: https://github.com/snapquast73-boop/SCORCHNG/pull/3 (`efbf736e9f0609fa08f8274a9fa2bbda27cf26d4`). Its verification passed, but its custom deployment job failed after the optional settings-mutation step was introduced: https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801 . The inherited legacy deployment succeeded. Do not treat this run as a verified custom publication.
-- Reopened integration while repairing publication. Remove the optional settings mutation and restore the previously successful direct artifact deployment. Add an explicit barrier that waits for any legacy Pages workflow for the same commit to finish first, so generated official data cannot be overwritten afterward. This works without repository-settings administration.
+- Initially prepared a duplicate repair and a legacy-publisher barrier. After discovering session 2824cb82 had claimed and merged the repair, withdrew this session’s overlapping workflow changes and retained their workflow verbatim. A possible legacy-publishing order barrier is now a request to that owner, not an implemented/verified capability.
 - Add a real-browser review-feed scan (all 15 games on the already verified 2026-09-11 date, with source-linked error rows) to the existing live browser scenario.
 - The sandbox's authenticated REST API quota was exhausted during final checks. GraphQL check queries and git transport remain usable. This is not an authentication failure and does not require the user to reconnect or provide credentials. The Actions job uses its own declared permissions.
+| Follow-up task | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Restore the verified Pages deployment path after the settings-update regression | in progress | 2824cb82 | .github/workflows/pages.yml, COORDINATION.md | [Failed deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801/job/136612418083#step:4:9), [Last successful deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829378311) |
+
+- Follow-up confirmed that [PR #3](https://github.com/snapquast73-boop/SCORCHNG/pull/3) merged, but its [main workflow](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801) failed at the newly added settings-update step before deploying. The earlier note about a single publisher was an intention, not a verified settings change. This patch removes that step and restores the deployment sequence that previously passed. [GitHub Pages REST documentation](https://docs.github.com/en/rest/pages/pages#update-information-about-a-github-pages-site) distinguishes updating site settings from creating a deployment.
+- Local tests passed (16 Node, 5 Python), the static build passed, and the failed run's verification job independently passed and collected 257 paragraphs from the [official MLB log](https://www.mlb.com/official-information/scoring-changes). The live replay and scoring pages were reachable; this follow-up changes no data or application behavior.
+
+## Parallel-session handoff and conflict resolution
+- While preparing PR #5, discovered the other session had already merged PR #4: https://github.com/snapquast73-boop/SCORCHNG/pull/4 . Fetched origin/main and merged it into this session’s assigned branch, without switching branches.
+- Conflicts occurred in `.github/workflows/pages.yml` and `COORDINATION.md`. Resolved by retaining **exactly** the other session’s workflow and preserving both sessions’ log entries. Removed this session’s unused barrier script and extra workflow permissions. No other session’s implementation or log was discarded.
+- Workflow scope is handed off to session `2824cb82`; this session makes no further changes to that owned file. Request to that owner: consider coordinating any same-commit legacy publisher so it cannot finish after the verified artifact deployment. The possible ordering risk is published on Flagged for Review and does not assert that source values are wrong.
+- Remaining PR #5 scope is limited to live review-feed browser verification, verification documentation, the public review note and coordination records. The application and workflow are unchanged from integrated main.
+
+| Verification follow-up | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Verify full-date live review feeds and preserve parallel repair | in progress | b7be163c | tools/browser/site.spec.mjs, docs/VERIFICATION.md, flagged.html, COORDINATION.md | [PR #5](https://github.com/snapquast73-boop/SCORCHNG/pull/5), [retained repair PR #4](https://github.com/snapquast73-boop/SCORCHNG/pull/4) |

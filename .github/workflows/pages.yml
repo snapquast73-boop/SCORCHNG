@@ -54,8 +54,6 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      actions: read
       pages: write
       id-token: write
     environment:
@@ -66,10 +64,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - name: Wait for any inherited legacy Pages publisher to finish first
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node tools/await-legacy-pages.mjs
+      # Publishing an artifact and changing repository Pages settings are separate operations.
+      # Do not mutate repository settings with the deployment token.
       - name: Deploy verified site
         id: deployment
         uses: actions/deploy-pages@v5
