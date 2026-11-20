@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Known limitations and unverified items in this MLB StatsAPI fan project.">
+  <title>Flagged for Review — MLB Live PBP</title>
+  <style>
+    :root { color-scheme: dark; font: 16px/1.6 system-ui, sans-serif; background: #10141b; color: #e8edf5; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: #79bcff; }
+    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem clamp(1rem, 4vw, 3rem); background: #171e29; border-bottom: 1px solid #344052; }
+    .brand { font-size: 1.15rem; font-weight: 700; }
+    .sc-toplinks { display: flex; flex-wrap: wrap; gap: .6rem; }
+    .btn { display: inline-block; padding: .45rem .75rem; border: 1px solid #45556c; border-radius: .45rem; color: #e8edf5; text-decoration: none; }
+    .sc-main { max-width: 980px; margin: 2rem auto; padding: 0 1rem; }
+    .sc-intro, .sc-panel { padding: 1.25rem; margin: 1rem 0; border: 1px solid #344052; border-radius: .75rem; background: #171e29; }
+    h1, h2 { line-height: 1.25; }
+    code { overflow-wrap: anywhere; color: #ffd479; }
+    .site-footer { max-width: 980px; margin: 2rem auto; padding: 1rem; color: #aab5c4; border-top: 1px solid #344052; }
+  </style>
+</head>
+<body class="page-scoring">
+  <header class="topbar">
+    <div class="brand"><span class="brand-ball">⚾</span><span>Flagged for Review</span></div>
+    <nav class="sc-toplinks" aria-label="Site">
+      <a class="btn btn-ghost" href="index.html">Scoreboard</a>
+      <a class="btn btn-ghost" href="reviews.html">Replay Feed</a>
+      <a class="btn btn-ghost" href="scoring.html">Scoring Changes</a>
+    </nav>
+  </header>
+  <main class="sc-main">
+    <section class="sc-intro">
+      <h1>Flagged for Review</h1>
+      <p>This page records confirmed limitations of the supplied repository. It does not contain invented game records or unverified baseball values.</p>
+    </section>
+    <section class="sc-panel" aria-labelledby="issue-1">
+      <h2 id="issue-1">IRR-001 — Required application assets are absent from this checkout</h2>
+      <p><strong>Status: Needs review; blocks restoration of the original functionality.</strong></p>
+      <p>The checked-in HTML pages reference <code>assets/css/style.css</code> and JavaScript modules under <code>assets/js/</code>, including API, scoreboard, game, replay-feed, and scoring-page code. Those paths are not present in the repository tree. Consequently, the pages cannot execute their advertised UI/data behavior from this checkout. The source files could not be recovered from the original project during this session; no replacement data or model behavior has been fabricated.</p>
+      <p><strong>Official data references (these document the intended upstream source, not the missing local files):</strong></p>
+      <ul>
+        <li><a href="https://statsapi.mlb.com/api/v1/schedule?sportId=1&amp;date=2026-11-20" target="_blank" rel="noopener">MLB StatsAPI schedule endpoint</a> — official schedule data.</li>
+        <li><a href="https://statsapi.mlb.com/api/v1/eventTypes" target="_blank" rel="noopener">MLB StatsAPI event-type registry</a>.</li>
+        <li><a href="https://www.mlb.com/official-information/scoring-changes" target="_blank" rel="noopener">MLB Official Scoring Changes</a> — official scoring-change reference.</li>
+        <li><a href="https://baseballsavant.mlb.com/" target="_blank" rel="noopener">Baseball Savant</a> — official MLB Statcast resource referenced by the project.</li>
+      </ul>
+      <p><strong>Verification:</strong> compared the script/style references in <code>index.html</code>, <code>game.html</code>, <code>reviews.html</code>, and <code>scoring.html</code> to the complete tracked-file listing at the starting commit. None of the referenced <code>assets/</code> files are included. The claimed prior behavior and any individual table rows therefore remain unverified.</p>
+    </section>
+  </main>
+  <footer class="site-footer"><p>Unofficial fan project, not affiliated with MLB. Official source links above are provided for manual review; missing application code is not evidence of any baseball result.</p></footer>
+</body>
+</html>

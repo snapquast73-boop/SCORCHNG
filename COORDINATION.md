@@ -1,32 +1,28 @@
 # COORDINATION.md — Shared Task Board for SCORCHNG
 
-## Project Scope
-Fix github projects: ensure the cloned repository `snapquast73-boop/SCORCHNG` (branch `arena/00b81b6e-scorchng`) is functionally working like the original user's GitHub Pages site (`https://buffedlizard55-lab.github.io/MLB-Live-PBP/reviews.html` and the copy `https://buffedlizard55-lab.github.io/MLBSCORINGCHANGE/`).
+## Project scope
+Restore the uploaded `snapquast73-boop/SCORCHNG` website to the behavior of the referenced MLB Live PBP site, without changing the original owner's site. Keep baseball facts sourced from official sources; leave unverified facts blank and flag limitations.
 
-## Shared Task Board
+## Shared task board
 
-| Task ID | Task Description | Status | Owning Session ID | Files Touched | Sources | Verification Performed | Irregularities Flagged |
-|---------|------------------|--------|-------------------|---------------|---------|------------------------|------------------------|
-| T01 | Review repository structure and verify baseline functionality matches original | unclaimed | - | . | - | - | - |
-| T02 | Ensure GitHub Pages deployment configuration is correct for the current branch | unclaimed | - | . | - | - | - |
-| T03 | Verify line-by-line that every table row in `scoring.html` and other pages has official source links | unclaimed | - | scoring.html, reviews.html, game.html, index.html | - | - | - |
-| T04 | Fix any broken links, build issues, or functional regressions | unclaimed | - | . | - | - | - |
-| T05 | Integration: merge verified changes, confirm site builds, publish to GitHub Pages | unclaimed | - | . | - | - | - |
-| T06 | Publish "Flagged for Review" page with source links and irregularities | unclaimed | - | flagged-review.html (to be created) | - | - | - |
+| Task ID | Task description | Status | Owning session ID | Files touched / scope | Sources | Verification performed | Irregularities |
+|---|---|---|---|---|---|---|---|
+| T01 | Audit repository contents and compare referenced page behavior | done | `arena-session-00b81b6e` | Read-only audit | [Original repo reference](https://github.com/buffedlizard55-lab/MLB-Live-PBP); [published reference](https://buffedlizard55-lab.github.io/MLB-Live-PBP/reviews.html) | Inspected tracked tree and all page asset references. The supplied checkout includes only root HTML, README, server, and metadata; all `assets/`, pipeline, docs, and test files described by the README are absent. Original source repository currently responds Not Found from GitHub API/git remote. | The original application's code and claimed feature behavior cannot be recovered or verified from this checkout. See IRR-001 on `flagged-review.html`. |
+| T02 | Verify GitHub Pages deployment configuration | done (configuration only) | `arena-session-00b81b6e` | GitHub Pages repository setting | [GitHub Pages API](https://api.github.com/repos/snapquast73-boop/SCORCHNG/pages); [published site](https://snapquast73-boop.github.io/SCORCHNG/) | GitHub API reports Pages built from `main` root, legacy build; published root is accessible. This does not establish functionality of pages that reference absent assets. | No successful deploy for changes on this feature branch has been established. |
+| T03 | Verify every table row and official source link | needs review | `arena-session-00b81b6e` | `index.html`, `game.html`, `reviews.html`, `scoring.html` plus absent app/data files | [MLB StatsAPI](https://statsapi.mlb.com/); [MLB Official Scoring Changes](https://www.mlb.com/official-information/scoring-changes); [Baseball Savant](https://baseballsavant.mlb.com/) | No rendered tables/data are available to inspect: their JS renderers and generated official/model data are absent. No individual values have been marked verified. | Row-by-row verification cannot be honestly completed until source assets/data are restored. |
+| T04 | Fix broken assets/build issues and functional regressions | in progress | `arena-session-00b81b6e` | Whole repo | [MLB StatsAPI](https://statsapi.mlb.com/api/v1/); [MLB Official Scoring Changes](https://www.mlb.com/official-information/scoring-changes) | Reproduced missing referenced paths by comparing HTML `src`/`href` attributes against the complete tracked file tree. Existing `server.mjs` starts and serves static content but cannot supply absent client assets. | Need source files or an explicitly approved reconstruction to restore parity; must not invent features or data. |
+| T05 | Integrate, test, open PR, merge, and verify GitHub Pages | blocked | `arena-session-00b81b6e` | Current branch to `main` only | [GitHub Pages API](https://api.github.com/repos/snapquast73-boop/SCORCHNG/pages) | Existing `main` Pages configuration is live. A local run of the server succeeds; repository has no test files despite README referring to tests. | Do not merge a broken/incomplete app. Feature PR/deploy cannot be truthfully marked complete while required CSS/JS/data are missing. |
+| T06 | Publish a clearly labeled Flagged for Review page | in progress | `arena-session-00b81b6e` | `flagged-review.html`, `scoring.html` | [MLB StatsAPI](https://statsapi.mlb.com/api/v1/); [MLB Official Scoring Changes](https://www.mlb.com/official-information/scoring-changes); [Baseball Savant](https://baseballsavant.mlb.com/) | Added a self-styled flag page describing only the observed missing-assets limitation and included official source references. Linked from all primary pages and the 404 page. Local static-server requests for the page return HTTP 200; branch changes are not deployed. | The local page's styling also depends on missing `assets/css/style.css`; deployment verification remains outstanding. |
 
-## Coordination Rules
-- Claim a task by writing session ID `arena-session-00b81b6e` and file scope.
-- Commit and push claim immediately.
-- Non-overlapping scopes: work on branch `arena/00b81b6e-scorchng`.
-- Run `git pull --rebase` before every push.
-- Record sources, verification, and irregularities in this file.
-- Final integration session merges to `main`, confirms GitHub Pages deployment, and records PR link.
-
-## Session Claim
-- Session ID: `arena-session-00b81b6e`
-- Branch: `arena/00b81b6e-scorchng`
-- Claimed Tasks: T01, T02, T03, T04, T05, T06
-- Scope: Entire repository `/home/user/SCORCHNG`
+## Session claim and coordination
+- Session: `arena-session-00b81b6e`
+- Branch: `arena/00b81b6e-scorchng` (session branch is fixed; repository work remains on this branch)
+- Scope claimed: entire repository, single active session
+- Claim was committed and pushed in commit `007d1ed` before implementation work.
+- Run tests before each push as specified in `AGENTS.md`; however, the referenced `tools/*-test.mjs` and offline smoke test do not exist in this checkout.
 
 ## Log
-- 2026-11-20: Created COORDINATION.md and claimed all tasks for session `arena-session-00b81b6e`.
+- 2026-11-20: Created and pushed the task board / initial claim.
+- 2026-11-20: Killed the stale local server process and restarted `node server.mjs` successfully on `0.0.0.0:8000`.
+- 2026-11-20: Verified repo Pages setting and live root; found all `assets/`, `pipeline/`, `tools/`, `docs/`, workflow, and generated data paths missing from the supplied tracked tree. GitHub API and `git ls-remote` for the referenced original repository returned Not Found / Repository not found.
+- 2026-11-20: Added `flagged-review.html` and a navigation link in `scoring.html`. No game facts have been added or claimed verified. Integration remains blocked; do not open/merge a PR that presents the nonfunctional app as fixed.
