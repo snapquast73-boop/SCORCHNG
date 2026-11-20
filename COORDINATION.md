@@ -17,3 +17,9 @@ Session: `b7be163c` (Arena assigned branch `arena/b7be163c-scorchng`). All work 
 - Official MLB schedule and a game payload were read through the fetch tool. MLB’s own scoring-change page was read. GitHub’s official Pages documentation source confirms that Pages is static hosting.
 - Restored app code keeps the uploaded HTML shells, uses per-row official links, and explicitly withholds missing models/captures. Exact parity remains unverified.
 - GitHub Pages settings update returned HTTP 403 (integration permission restriction), despite repository admin metadata. Existing legacy Pages configuration is intact. Deployment path will be tested using repository workflows; no credential requests or changes to the original repositories.
+
+| Additional task | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Harden retained local server and nested 404 handling | in progress | b7be163c | server.mjs, 404.html; tests under already-owned tools/ | [Uploaded server](https://github.com/snapquast73-boop/SCORCHNG/blob/9705bf468bba9ccb808d8f4c21a06cd1e9c87032/server.mjs) |
+
+PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pull/2. This is not yet a completion/merge claim. Offline checks currently pass (12 Node tests, 4 Python tests); live-source and browser checks run in CI.
