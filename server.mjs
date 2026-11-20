@@ -330,7 +330,7 @@ const server = http.createServer((req, res) => {
   const relative = path.relative(REPO_DIR, filePath);
   const publicDirectory = /^(assets|docs|data)\//.test(relative);
   // Explicit public paths; do not expose .git/config, dependencies, server source or symlinks.
-  if (!filePath.startsWith(REPO_DIR + path.sep) || safePath.includes('\\') || relative.split(path.sep).some(p => p.startsWith('.')) ||
+  if (!filePath.startsWith(REPO_DIR + path.sep) || safePath.includes('\\') || safePath.includes('\0') || relative.split(path.sep).some(p => p.startsWith('.')) ||
       (!rootFiles.has(relative) && !publicDirectory) ||
       (fs.existsSync(filePath) && !fs.realpathSync(filePath).startsWith(REPO_DIR + path.sep))) {
     sendError(res, 403, 'Forbidden');

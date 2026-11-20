@@ -63,3 +63,8 @@ test('multiple runner movements preserve an explicitly observed score', () => {
  ];
  assert.equal(R.snapshot(p).runners['2'].scored, true);
 });
+test('corrupt local rows are dropped instead of breaking the feed', () => {
+ context.localStorage = { getItem: () => JSON.stringify({ entries: [null, { category: 'changes', gamePk: 99999999 }], flags: [null], snapshots: { bad: null } }) };
+ const data = F.load('2026-09-11');
+ assert.equal(data.entries.length, 0); assert.equal(data.flags.length, 0); assert.equal(Object.keys(data.snapshots).length, 0); assert.match(F.warning, /Malformed/);
+});

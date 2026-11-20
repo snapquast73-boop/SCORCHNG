@@ -20,7 +20,7 @@ Session: `b7be163c` (Arena assigned branch `arena/b7be163c-scorchng`). All work 
 
 | Additional task | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
-| Harden retained local server and nested 404 handling | in progress | b7be163c | server.mjs, 404.html; tests under already-owned tools/ | [Uploaded server](https://github.com/snapquast73-boop/SCORCHNG/blob/9705bf468bba9ccb808d8f4c21a06cd1e9c87032/server.mjs) |
+| Harden retained local server and nested 404 handling | done | b7be163c | server.mjs, 404.html; tests under already-owned tools/ | [Uploaded server](https://github.com/snapquast73-boop/SCORCHNG/blob/9705bf468bba9ccb808d8f4c21a06cd1e9c87032/server.mjs) |
 
 PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pull/2. This is not yet a completion/merge claim. Offline checks currently pass (12 Node tests, 4 Python tests); live-source and browser checks run in CI.
 
@@ -31,4 +31,11 @@ PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pul
 
 | Additional task | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
-| Align inherited agent instructions with restored verified runtime | in progress | b7be163c | AGENTS.md; README.md remains within original claim | [Uploaded instructions and missing-file references](https://github.com/snapquast73-boop/SCORCHNG/blob/9705bf468bba9ccb808d8f4c21a06cd1e9c87032/AGENTS.md) |
+| Align inherited agent instructions with restored verified runtime | done | b7be163c | AGENTS.md; README.md remains within original claim | [Uploaded instructions and missing-file references](https://github.com/snapquast73-boop/SCORCHNG/blob/9705bf468bba9ccb808d8f4c21a06cd1e9c87032/AGENTS.md) |
+
+## Final code review before merge
+- `npm test`: 16 Node tests and 5 Python parser tests pass locally. Real MLB schedule/game browser checks and six synthetic browser scenarios passed in run 44828843230; current-head CI must pass before merge.
+- Readme now retains the original request and core values verbatim, while linking unsupported inherited results as immutable provenance rather than republishing unverified metrics. Agent instructions describe only files/capabilities actually present.
+- Local server and corrupted-browser-log handling were reviewed and regression tested. Shared legacy server merges remain unused and uncertified; public writes default to disabled.
+- No external-link completeness claim is made. Every local HTML dependency resolves; known unavailable original-repository links remain intentionally visible as review evidence.
+- Missing model/history, exact upstream parity, complete historical error coverage and unsupported run/pitching attribution are published at `flagged.html` as **needs review**, not blockers and not verified facts.

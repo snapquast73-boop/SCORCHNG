@@ -10,7 +10,7 @@ test('optional local server hides private files, rejects malformed paths and dis
    child.once('error', reject); child.once('exit', code => reject(new Error('Server exited: ' + code)));
   });
   for (const name of ['/', '/SCORCHNG/index.html', '/assets/js/api.js', '/flagged.html']) assert.equal((await fetch(url + name)).status, 200, name);
-  for (const name of ['/.git/config', '/server.mjs', '/package.json', '/node_modules/@playwright/test/package.json']) assert.equal((await fetch(url + name)).status, 403, name);
+  for (const name of ['/.git/config', '/server.mjs', '/package.json', '/node_modules/@playwright/test/package.json', '/%00']) assert.equal((await fetch(url + name)).status, 403, name);
   assert.equal((await fetch(url + '/%E0%A4%A')).status, 400);
   assert.equal((await fetch(url + '/api/feed-log', { method: 'POST', body: '{}' })).status, 403);
   assert.equal((await fetch(url + '/api/health')).status, 200);

@@ -10,7 +10,12 @@
         if (!text) return fresh();
         const data = JSON.parse(text);
         if (!data || !Array.isArray(data.entries) || !Array.isArray(data.flags) || !data.snapshots || typeof data.snapshots !== 'object') throw new Error('Invalid saved log');
-        return data;
+        const validId = id => /^\d+$/.test(String(id));
+        const entries = data.entries.filter(r => r && validId(r.gamePk) && ['changes', 'hitError', 'other'].includes(r.category) && r.before && r.after && Array.isArray(r.stats) && r.stats.every(s => s && typeof s.stat === 'string' && Number.isFinite(s.delta)));
+        const flags = data.flags.filter(r => r && validId(r.gamePk) && typeof r.message === 'string');
+        const snapshots = Object.fromEntries(Object.entries(data.snapshots).filter(([key, s]) => /^\d+:\d+$/.test(key) && s && typeof s === 'object' && !Array.isArray(s) && s.runners && typeof s.runners === 'object' && !Array.isArray(s.runners) && Object.values(s.runners).every(r => r && typeof r.scored === 'boolean')));
+        if (entries.length !== data.entries.length || flags.length !== data.flags.length || Object.keys(snapshots).length !== Object.keys(data.snapshots).length) this.warning = 'Malformed saved rows were dropped; retained observations are not a complete archive.';
+        return { entries, flags, snapshots };
       } catch (e) { this.warning = 'Saved browser log could not be read; this visit starts a new baseline.'; console.warn(e); return fresh(); }
     },
     save(date, data) {
