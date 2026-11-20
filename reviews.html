@@ -33,6 +33,7 @@
         <span id="live-dot" class="live-dot"></span><span>LIVE</span>
       </div>
     </div>
+    <a class="btn btn-ghost" href="flagged.html">⚑ Flagged for Review</a>
   </header>
 
   <div id="banner" class="banner"></div>
@@ -49,79 +50,17 @@
     <div id="status-line" class="status-line"></div>
   </main>
 
-  <footer class="site-footer">
-    <p>
-      Unofficial fan project. Live data via the public MLB StatsAPI
-      (<a href="https://statsapi.mlb.com" target="_blank" rel="noopener">statsapi.mlb.com</a>) —
-      manager challenges, crew chief/umpire reviews and boundary calls come from the live game feed's
-      <code>reviewDetails</code>, ABS pitch challenges from <code>absChallenges</code> /
-      pitch-level review events, and <strong>official-scorer pending rulings</strong>
-      (hit vs. error vs. fielder's choice undecided) come from the API's own event-type
-      registry — <code>os_ruling_pending_primary</code> / <code>os_ruling_pending_prior</code>,
-      description "Official Scorer Ruling Pending" (<code>GET /api/v1/eventTypes</code>).
-      <strong>Scoring-change model</strong>: the 🎯 Error Watch tab and the chances shown on scoring-change and
-      pending rows come from a model fitted on MLB's official scoring-change log — methodology, accuracy and the
-      full season list on the <a href="scoring.html">✏️ Scoring Changes</a> page.
-      A pending ruling decides how the play is charged and never removes a run from the score.
-      Challenges-remaining counters are the official per-team
-      values read directly from the StatsAPI (<code>review.away/home.used/remaining</code> for
-      manager challenges; <code>gameData.absChallenges.away/home.usedSuccessful/usedFailed/remaining</code>
-      for ABS) — never derived by counting feed events, and never zero-filled when a counter is
-      absent (e.g. pre-ABS seasons). A used-counter that moves backwards between polls is flagged
-      as an irregularity on the affected rows instead of being corrected or hidden. The score tracker separates the observed call-on-field score,
-      conditional possibilities, and an attributable official score after resolution when exposed.
-      Possibilities use only runs tied to the reviewed event and are not predictions of the ruling
-      or runner placement.
-      A review is flagged <strong>Runs at Risk</strong> only when the official payload credits one or
-      more scoring movements to the very event under review, so an overturn could take those runs
-      back off the scoreboard. Unrelated runs from earlier in the same plate appearance (a steal of
-      home, a wild pitch) are excluded, and whether replay actually removes a run is never predicted.
-      <strong>Official scoring changes</strong> (an error reclassified as a hit, a
-      single changed to a double or back, a base hit changed to a fielder's choice + error, an out
-      changed to a hit, and so on) are tracked in the ✏️ Scoring Changes tab and in the All feed by
-      snapshotting every completed play's official classification (<code>result.eventType</code> /
-      <code>result.isOut</code> / <code>count.outs</code> / error movements in <code>runners[]</code>)
-      on every poll and diffing it against the previous polls — the StatsAPI payload carries no
-      scoring-change marker, so the initial call and the final ruling are known only from
-      consecutive observations. Each row shows the observed initial call and the final ruling, the
-      official score after the play, and an attribution note.
-      <strong>Main alerts = batting Runs / Hits / RBI.</strong> A scoring change reaches the All
-      feed, the ✏️ Scoring Changes · R/H/RBI tab and the chime only when it alters a batter's runs,
-      hits or RBI (e.g. an error changed to a single, or a batter losing an RBI). Changes that alter
-      only pitching stats — hits allowed, walks, strikeouts, earned / unearned runs — are listed
-      silently in 🧮 Pitching Stats, and rulings that change no stat (e.g. a double changed to a
-      single) in 🗂️ Other Rulings. Every scoring-change row shows its stat lines.
-      <strong>Hit → error changes</strong> (a play first ruled a single, double or triple whose final
-      ruling is an error) are the one scoring-change category kept OUT of the All feed, the ✏️
-      Scoring Changes tab and the alert sounds: they live in their own 📉 Hit → Error tab — with
-      the pre-change model chance and the final result on every row — so the primary alert system
-      stays focused on error → hit movement and scoring-pending resolutions. Only confirmed
-      changes become rows; the per-play baselines that make detection possible are compact
-      classification snapshots, never feed entries, so tracking this direction adds no bloat
-      (the season-long list is on the ✏️ Scoring Changes page under 📉 Hit → Error). Changes that coincide with a replay
-      review stay on that review's row; everything else is attributed as an official scoring change
-      (per MLB's own log, changes are made by the Official Scorer, the Elias Sports Bureau, or after
-      a player/club review —
-      <a href="https://www.mlb.com/official-information/scoring-changes" target="_blank" rel="noopener">mlb.com/official-information/scoring-changes</a>).
-      A change can only be tracked when its initial call was observed before the change landed;
-      finals are re-scanned for 30 minutes after they end (at most every 30 seconds) to catch
-      rulings published after the game. Payload edits without a reclassification (description /
-      RBI / score only) and plays that vanish from the payload are flagged as irregularities for
-      review, never corrected or hidden.
-      Every tracked entry is also logged to this browser (one log per date, newest seven dates
-      kept, 500 most-recent rows) so a refresh or a later visit restores the feed rows, the
-      scoring baselines and the flagged irregularities before the first scan runs; the log holds
-      only observed payload data, and anything malformed in it is dropped with a console warning
-      rather than guessed.
-      Not affiliated with MLB or MLB Advanced Media.
-    </p>
-  </footer>
+  <footer class="site-footer"><p>Unofficial fan project. Data from the public
+    <a href="https://statsapi.mlb.com" target="_blank" rel="noopener">MLB StatsAPI</a> and
+    <a href="https://www.mlb.com/official-information/scoring-changes" target="_blank" rel="noopener">MLB Official Scoring Changes</a>.
+    Blank cells mean the source did not supply a value; no probabilities are inferred.
+    <a href="flagged.html">Flagged for Review</a> · <a href="docs/VERIFICATION.md">Verification notes</a>.
+    Not affiliated with MLB or MLB Advanced Media.</p></footer>
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/ui.js"></script>
   <script src="assets/js/reviews.js"></script>
   <script src="assets/js/feed-log.js"></script>
-  <script src="assets/js/scoring-model.js"></script>
   <script src="assets/js/reviews-feed.js"></script>
 </body>
 </html>

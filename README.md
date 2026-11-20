@@ -1,8 +1,39 @@
+# Restoration status — 2026-11-20
+
+**Your live site:** <https://snapquast73-boop.github.io/SCORCHNG/>
+
+The upload omitted every asset, pipeline, dataset and test referenced below. Both documented
+upstream repositories returned HTTP 404 during this session. The supplied HTML shells are retained;
+the missing runtime is reimplemented against official MLB endpoints. **Exact visual/functional parity
+with the unavailable upstream cannot be certified.**
+
+- Working: date-based scoreboard, game play-by-play / linescore / box score, replay and pending markers,
+  all-scope error plays for a selected date, browser-local observed batting changes, isolated hit→error tab,
+  official scoring-change text with per-row official links, automatic Pages deployment.
+- Unavailable and explicitly flagged: historical first-call captures, fitted model, forecasts, historic
+  numeric claims, full-season error scans, pitching-only change detection, and run-at-risk alerts.
+- [Flagged for Review](https://snapquast73-boop.github.io/SCORCHNG/flagged.html)
+  · [Verification and official sources](docs/VERIFICATION.md) · [Task board](COORDINATION.md).
+- Local run: `node server.mjs` (port 8000). `npm test` runs offline structural and logic checks.
+  `python3 pipeline/official.py --output data/official.json` collects official paragraphs when MLB is reachable.
+  `node tools/build.mjs` creates the static `_site/` directory. GitHub Actions performs collection and publication
+  on pushes to main and every three hours. No server-side API is required on GitHub Pages.
+- Browser logs are browser-local, not shared across visitors. The original server is retained for provenance;
+  the restored client does not POST to it. On Pages, scheduled builds refresh official text, not browser captures.
+
+## Archived original documentation (unverified)
+
+**Everything below is inherited documentation, not a claim about this restored copy.** Historical metrics,
+feature-completeness claims, example probabilities and absent-file references are unverified and retained
+only as provenance. Do not use them as verified data. See the public review page.
+
+---
+
 # ⚾ MLB Scoring Changes — MLB Live PBP + scoring-change model
 
-**Live site (this copy):** <https://buffedlizard55-lab.github.io/MLBSCORINGCHANGE/> ·
-[Replay Feed](https://buffedlizard55-lab.github.io/MLBSCORINGCHANGE/reviews.html) ·
-[✏️ Scoring Changes](https://buffedlizard55-lab.github.io/MLBSCORINGCHANGE/scoring.html)
+**Live site (this copy):** <https://snapquast73-boop.github.io/SCORCHNG/> ·
+[Replay Feed](https://snapquast73-boop.github.io/SCORCHNG/reviews.html) ·
+[✏️ Scoring Changes](https://snapquast73-boop.github.io/SCORCHNG/scoring.html)
 **Original site (never modified from here):** <https://buffedlizard55-lab.github.io/MLB-Live-PBP/reviews.html>
 
 ---
