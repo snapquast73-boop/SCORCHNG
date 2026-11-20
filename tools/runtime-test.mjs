@@ -50,3 +50,16 @@ test('all browser storage stays inside the required isolated namespace', () => {
   if (text.includes('localStorage')) assert.ok(text.includes('mlbScoringChange.'));
  }
 });
+test('pending or unknown classifications never manufacture an H delta', () => {
+ for (const event of ['os_ruling_pending_primary', 'unknown_event', null]) {
+  const stats = R.delta(R.snapshot(play(event)), R.snapshot(play('single')));
+  assert.equal(stats.filter(s => s.stat === 'H').length, 0);
+ }
+});
+test('multiple runner movements preserve an explicitly observed score', () => {
+ const p = play('single'); p.runners = [
+  { details: { runner: { id: 2, fullName: 'SYNTHETIC Runner' }, isScoringEvent: true } },
+  { details: { runner: { id: 2, fullName: 'SYNTHETIC Runner' }, isScoringEvent: false } }
+ ];
+ assert.equal(R.snapshot(p).runners['2'].scored, true);
+});

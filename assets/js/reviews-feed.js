@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   const tabs = [['all', 'All'], ['reviews', '🚨 Reviews'], ['changes', '✏️ Scoring Changes · R/H/RBI'], ['errors', '🎯 Error Watch'], ['pending', '⚖️ Scoring Pending'], ['hitError', '📉 Hit → Error'], ['pitching', '🧮 Pitching Stats'], ['other', '🗂️ Other Rulings'], ['flags', '⚑ Irregularities']];
-  let tab = 'all', rows = [], flags = [], generation = 0, sound = false, audio;
+  let tab = 'all', rows = [], flags = [], generation = 0, sound = false, audio, loadingDate = null;
   const soundButton = document.getElementById('sound-toggle-btn');
   soundButton.title = 'Chime for newly observed batting R/H/RBI changes only. Hit → error remains silent.';
   soundButton.onclick = async () => {
@@ -30,6 +30,8 @@
       <p class="sources"><a href="game.html?gamePk=${encodeURIComponent(r.gamePk)}">Game details</a> · ${UI.sources(r.gamePk)}${r.videoId ? ' · ' + UI.link('https://baseballsavant.mlb.com/sporty-videos?playId=' + encodeURIComponent(r.videoId), 'MLB video') : ''}</p></article>`).join('') || UI.empty(tab === 'pitching' ? 'Pitching-only change detection is unavailable in the recovered upload. Review the official scoring-change list; no pitching deltas are inferred.' : 'No matching observations. Historical initial calls cannot be recovered from a current feed.'));
   }
   async function load(date) {
+    if (loadingDate === date) return;
+    loadingDate = date;
     const token = ++generation; UI.status('Loading MLB game feeds…');
     rows = []; flags = []; render();
     try {
@@ -45,7 +47,8 @@
       render(); if (changes) chime();
       UI.banner(`Only observations from this browser are persisted. Model probabilities, complete historical capture and run alerts are unavailable.${FeedLog.warning ? ' ' + FeedLog.warning : ''}`);
       UI.status(`Updated ${new Date().toLocaleTimeString()} · ${games.length - failed}/${games.length} game feeds loaded · ${UI.esc(date)} · polls every 30 seconds. ${failed ? 'Coverage incomplete; see Irregularities.' : ''}`);
-    } catch (e) { UI.status(`MLB data unavailable: ${e.message}. Retrying automatically.`, true); }
+    } catch (e) { if (token === generation) UI.status(`MLB data unavailable: ${e.message}. Retrying automatically.`, true); }
+    finally { if (token === generation) loadingDate = null; }
   }
   const selected = UI.dateController('ReplayFeed', date => Promise.resolve().then(() => load(date)));
   document.getElementById('refresh-btn').onclick = () => load(selected());

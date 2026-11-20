@@ -52,3 +52,15 @@ test('flagged page has sources and collection status on mobile', async ({ page }
  for (const row of await rows.all()) expect(await row.locator('a[href^="https://"]').count()).toBeGreaterThan(0);
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+test('real official feeds work cross-origin in the browser', async ({ page }) => {
+ test.skip(!process.env.LIVE_BROWSER, 'Official network test is executed in GitHub Actions');
+ test.setTimeout(90000);
+ const errors = []; page.on('pageerror', e => errors.push(e.message));
+ await page.goto('index.html?date=2026-09-11');
+ await expect(page.locator('.game-card')).toHaveCount(15, { timeout: 40000 });
+ await page.goto('game.html?gamePk=824631');
+ await expect(page.locator('#header-away')).toContainText('Pittsburgh Pirates', { timeout: 40000 });
+ await expect(page.locator('#plays-wrap .play-row').first()).toBeVisible();
+ expect(errors).toEqual([]);
+ await page.screenshot({ path: 'test-results/official-game.png', fullPage: true });
+});

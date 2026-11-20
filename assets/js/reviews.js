@@ -2,6 +2,9 @@
 (function (root) {
   'use strict';
   const HITS = new Set(['single', 'double', 'triple', 'home_run']);
+  // Confirmed against MLB /api/v1/eventTypes. Unknown/pending events do not imply H=0.
+  const NON_HITS = new Set(['double_play', 'field_error', 'field_out', 'fielders_choice', 'fielders_choice_out', 'force_out', 'grounded_into_double_play', 'strikeout', 'strike_out', 'strikeout_double_play', 'strikeout_triple_play', 'triple_play', 'sac_fly', 'catcher_interf', 'batter_interference', 'fan_interference', 'sac_fly_double_play', 'sac_bunt', 'sac_bunt_double_play', 'walk', 'intent_walk', 'hit_by_pitch']);
+  const knownRuling = event => HITS.has(event) || NON_HITS.has(event);
   function errorPlay(play) {
     return /error/.test(play.result?.eventType || '') || (play.runners || []).some(r => /error/i.test(r.details?.eventType || '') || (r.credits || []).some(c => /^f_.*error$|^error$/i.test(c.credit || '')));
   }
@@ -12,7 +15,7 @@
       const id = String(r.details.runner.id);
       // Record R only when MLB explicitly supplies isScoringEvent.
       if (typeof r.details.isScoringEvent === 'boolean') runners[id] = {
-        name: r.details.runner.fullName, scored: r.details.isScoringEvent
+        name: r.details.runner.fullName, scored: Boolean(runners[id]?.scored) || r.details.isScoringEvent
       };
     }
     return { event: play.result?.eventType ?? null, rbi: play.result?.rbi ?? null, batter: play.matchup?.batter?.id ?? null,
@@ -22,8 +25,8 @@
   function delta(before, after) {
     const stats = [];
     if (before.batter != null && before.batter === after.batter) {
-      if (before.event != null && after.event != null && HITS.has(before.event) !== HITS.has(after.event)) stats.push({ name: after.batterName, stat: 'H', delta: Number(HITS.has(after.event)) - Number(HITS.has(before.event)) });
-      if (before.rbi != null && after.rbi != null && before.rbi !== after.rbi) stats.push({ name: after.batterName, stat: 'RBI', delta: after.rbi - before.rbi });
+      if (knownRuling(before.event) && knownRuling(after.event) && HITS.has(before.event) !== HITS.has(after.event)) stats.push({ name: after.batterName, stat: 'H', delta: Number(HITS.has(after.event)) - Number(HITS.has(before.event)) });
+      if (Number.isFinite(before.rbi) && Number.isFinite(after.rbi) && before.rbi !== after.rbi) stats.push({ name: after.batterName, stat: 'RBI', delta: after.rbi - before.rbi });
     }
     for (const [id, r] of Object.entries(after.runners || {})) {
       const old = before.runners?.[id];

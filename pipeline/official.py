@@ -17,13 +17,23 @@ class Blocks(HTMLParser):
         self.depth = 0
         self.text = []
         self.skip = 0
+        self.lists = []
+        self.ordinal = None
 
     def handle_starttag(self, tag, attrs):
         if tag in ('script', 'style'):
             self.skip += 1
+        if tag in ('ol', 'ul') and not self.skip:
+            attributes = dict(attrs)
+            self.lists.append({'ordered': tag == 'ol', 'next': int(attributes.get('start', '1'))})
         if tag in ('p', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6') and not self.skip:
             if not self.depth:
                 self.text = []
+                self.ordinal = None
+                if tag == 'li' and self.lists and self.lists[-1]['ordered']:
+                    current = self.lists[-1]
+                    self.ordinal = int(dict(attrs).get('value', current['next']))
+                    current['next'] = self.ordinal + 1
             self.depth += 1
         if tag == 'br' and self.depth:
             self.text.append('\n')
@@ -34,7 +44,9 @@ class Blocks(HTMLParser):
         if tag in ('p', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6') and self.depth:
             self.depth -= 1
             if not self.depth:
-                self.blocks.append(''.join(self.text).strip())
+                self.blocks.append((''.join(self.text).strip(), self.ordinal))
+        if tag in ('ol', 'ul') and self.lists:
+            self.lists.pop()
 
     def handle_data(self, text):
         if self.depth and not self.skip:
@@ -47,10 +59,14 @@ def parse(html):
     year = None
     rows = []
     seen = set()
-    for block in parser.blocks:
-        heading = re.search(r'\b(20\d{2})\s+Regular Season\b', block)
+    for block, ordinal in parser.blocks:
+        heading = re.fullmatch(r'(20\d{2})\s+Regular Season', block)
         if heading:
             year = heading.group(1)
+        # MLB uses actual <ol><li><p> markup: the ordinal is supplied by HTML list semantics.
+        # Do not derive a season from a date, or turn unrelated navigation list items into rows.
+        if ordinal is not None and re.match(r'^\d{1,2}/\d{1,2}\s+\S+@\S+\s+--', block):
+            block = f'{ordinal:03d}. ' + block
         for item in re.split(r'\n(?=\s*\d{3}\.\s)', block):
             match = re.match(r'^\s*(\d{3})\.\s+(.+)', item, re.S)
             if not match or year is None:
@@ -63,10 +79,7 @@ def parse(html):
             seen.add(key)
             rows.append({'season': year, 'id': match.group(1), 'text': text, 'source': SOURCE})
     if not rows:
-        candidates = [b[:400] for b in parser.blocks if re.search(r'Regular Season|001\.|Swanson', b)][:6]
-        excerpts = re.findall(r'.{0,100}(?:Regular Season|001\.|Swanson).{0,200}', html)[:6]
-        detail = json.dumps({'blocks': candidates, 'sourceExcerpts': excerpts}, ensure_ascii=False)
-        raise ValueError('No numbered official paragraphs with a season heading found. Parser review required. ' + detail)
+        raise ValueError('No official list items with an explicit season heading found. Parser review required.')
     return rows
 
 
@@ -88,7 +101,7 @@ def main():
     target = pathlib.Path(config.output)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n')
-    print(f"Official text collection: {result['status']}, {len(result['rows'])} paragraphs")
+    print(f"::notice::Official text collection: {result['status']}, {len(result['rows'])} paragraphs. Source: {SOURCE}")
 
 if __name__ == '__main__':
     main()

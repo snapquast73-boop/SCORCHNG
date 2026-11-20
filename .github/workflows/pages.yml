@@ -34,6 +34,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Browser and project-path verification
+        env:
+          LIVE_BROWSER: 1
         run: npm run test:browser
       - name: Record source verification artifact
         uses: actions/upload-artifact@v7

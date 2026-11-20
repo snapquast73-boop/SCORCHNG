@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  let games = [], filter = 'all', generation = 0;
+  let games = [], filter = 'all', generation = 0, loadedDate = '';
   function render() {
     UI.tabs('tabs', [['all', 'All Games'], ['Live', 'Live'], ['Final', 'Final'], ['Preview', 'Upcoming']], filter, key => { filter = key; render(); });
     const visible = games.filter(g => filter === 'all' || g.status?.abstractGameState === filter);
@@ -14,6 +14,7 @@
   }
   async function load(date) {
     const current = ++generation; UI.status('Loading MLB schedule…');
+    if (loadedDate !== date) { loadedDate = date; games = []; UI.html('game-list', UI.empty('Loading MLB schedule…')); }
     try {
       const result = await API.schedule(date); if (current !== generation) return;
       games = result; render(); UI.banner('');
