@@ -224,7 +224,9 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const reqUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  let reqUrl;
+  try { reqUrl = new URL(req.url, 'http://local-server'); }
+  catch { sendError(res, 400, 'Invalid request URL'); return; }
   const pathname = reqUrl.pathname;
 
   // --- API Endpoints ---
@@ -264,6 +266,17 @@ const server = http.createServer((req, res) => {
 
   // POST /api/feed-log or /api/log
   if ((pathname === '/api/feed-log' || pathname === '/api/log') && req.method === 'POST') {
+    // Public previews must not accept arbitrary visitors' fabricated shared observations.
+    // The restored static client stores observations locally and never needs this route.
+    if (process.env.ENABLE_FEED_LOG_WRITES !== '1') {
+      sendError(res, 403, 'Shared log writes are disabled; use browser-local observations');
+      return;
+    }
+    const origin = req.headers.origin;
+    if (origin && origin !== `http://${req.headers.host}` && origin !== `https://${req.headers.host}`) {
+      sendError(res, 403, 'Cross-origin writes are not allowed');
+      return;
+    }
     let body = '';
     req.setEncoding('utf8');
     req.on('data', (chunk) => {
@@ -305,15 +318,21 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  let safePath = path.normalize(decodeURIComponent(pathname)).replace(/^(\.\.[\/\\])+/, '');
+  let safePath;
+  try { safePath = decodeURIComponent(pathname).replace(/^\/SCORCHNG(?=\/|$)/, ''); }
+  catch { sendError(res, 400, 'Malformed path encoding'); return; }
   if (safePath === '/' || safePath === '') safePath = '/index.html';
   if (safePath === '/reviews') safePath = '/reviews.html';
   if (safePath === '/game') safePath = '/game.html';
 
-  const filePath = path.join(REPO_DIR, safePath);
-
-  // Security check: ensure path is within REPO_DIR
-  if (!filePath.startsWith(REPO_DIR)) {
+  const filePath = path.resolve(REPO_DIR, '.' + safePath);
+  const rootFiles = new Set(['index.html', 'game.html', 'reviews.html', 'scoring.html', 'flagged.html', '404.html', 'README.md', 'COORDINATION.md', 'LICENSE']);
+  const relative = path.relative(REPO_DIR, filePath);
+  const publicDirectory = /^(assets|docs|data)\//.test(relative);
+  // Explicit public paths; do not expose .git/config, dependencies, server source or symlinks.
+  if (!filePath.startsWith(REPO_DIR + path.sep) || safePath.includes('\\') || safePath.includes('\0') || relative.split(path.sep).some(p => p.startsWith('.')) ||
+      (!rootFiles.has(relative) && !publicDirectory) ||
+      (fs.existsSync(filePath) && !fs.realpathSync(filePath).startsWith(REPO_DIR + path.sep))) {
     sendError(res, 403, 'Forbidden');
     return;
   }
@@ -355,7 +374,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`[MLB Live PBP Server] listening on http://${HOST}:${PORT}`);
+  console.log(`[MLB Live PBP Server] listening on http://${HOST}:${server.address().port}`);
   console.log(`[MLB Live PBP Server] Serving ${REPO_DIR}`);
   console.log(`[MLB Live PBP Server] Feed log persistence directory: ${DATA_DIR}`);
 });

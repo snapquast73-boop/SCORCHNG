@@ -10,3 +10,11 @@ node_modules/
 # Official-data pipeline: play-by-play cache lives in the GitHub Actions cache,
 # never in git (it is large and fully re-derivable from MLB StatsAPI).
 pipeline-cache/
+
+# Build and test artifacts
+_site/
+test-results/
+playwright-report/
+data/official.json
+__pycache__/
+*.pyc

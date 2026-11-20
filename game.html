@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MLB Live PBP — Game</title>
-  <meta name="description" content="Live MLB game view with a transparent two-sided hit forecast, at-bat details, linescore, box score and full play-by-play.">
+  <meta name="description" content="MLB at-bat details, linescore, box score and play-by-play from the official live feed.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23fff' stroke='%23e03131' stroke-width='6'/%3E%3Cpath d='M50 4 A46 46 0 0 1 96 50 M50 96 A46 46 0 0 1 4 50 M4 50 A46 46 0 0 1 50 4 M96 50 A46 46 0 0 1 50 96' stroke='%23e03131' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -17,6 +17,7 @@
       <button id="refresh-btn" class="btn">Refresh</button>
       <span class="countdown" id="countdown"></span>
     </div>
+    <a class="btn btn-ghost" href="flagged.html">⚑ Flagged for Review</a>
   </header>
 
   <div id="loading" class="loading-overlay"><div class="spinner"></div></div>
@@ -67,20 +68,17 @@
     <div id="status-line" class="status-line"></div>
   </main>
 
-  <footer class="site-footer">
-    <p>
-      Unofficial fan project. Live data via the public MLB StatsAPI
-      (<a href="https://statsapi.mlb.com" target="_blank" rel="noopener">statsapi.mlb.com</a>).
-      Not affiliated with MLB or MLB Advanced Media.
-    </p>
-  </footer>
+  <footer class="site-footer"><p>Unofficial fan project. Data from the public
+    <a href="https://statsapi.mlb.com" target="_blank" rel="noopener">MLB StatsAPI</a> and
+    <a href="https://www.mlb.com/official-information/scoring-changes" target="_blank" rel="noopener">MLB Official Scoring Changes</a>.
+    Blank cells mean the source did not supply a value; no probabilities are inferred.
+    <a href="flagged.html">Flagged for Review</a> · <a href="docs/VERIFICATION.md">Verification notes</a>.
+    Not affiliated with MLB or MLB Advanced Media.</p></footer>
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/ui.js"></script>
-  <script src="assets/js/scoring-model.js"></script>
   <script src="assets/js/reviews.js"></script>
   <script src="assets/js/feed-log.js"></script>
-  <script src="assets/js/props.js"></script>
   <script src="assets/js/game.js"></script>
 </body>
 </html>

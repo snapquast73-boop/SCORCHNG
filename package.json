@@ -1,0 +1,14 @@
+{
+  "name": "scorchng",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static MLB scoreboard restoration with official-source links",
+  "scripts": {
+    "test": "node --test tools/*-test.mjs && python3 -m unittest discover -s tools -p '*_test.py'",
+    "build": "node tools/build.mjs",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
+  }
+}
