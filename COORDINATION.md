@@ -4,7 +4,7 @@ Session: `b7be163c` (Arena assigned branch `arena/b7be163c-scorchng`). All work 
 
 | Task | Status | Owner | File scope | Evidence |
 | --- | --- | --- | --- | --- |
-| Restore missing application, audit and integrate deployment | done | b7be163c | assets/, tools/, .github/, docs/, all root HTML, README.md, COORDINATION.md, package*.json, playwright.config.mjs, .gitignore | [Uploaded repository](https://github.com/snapquast73-boop/SCORCHNG/tree/9705bf468bba9ccb808d8f4c21a06cd1e9c87032) |
+| Restore missing application, audit and integrate deployment | in progress | b7be163c | assets/, tools/, .github/, docs/, all root HTML, README.md, COORDINATION.md, package*.json, playwright.config.mjs, .gitignore | [Uploaded repository](https://github.com/snapquast73-boop/SCORCHNG/tree/9705bf468bba9ccb808d8f4c21a06cd1e9c87032) |
 
 ## Initial findings — 2026-11-20
 - Uploaded repository contains only ten root files. All referenced CSS/JavaScript, data, pipeline and tests are absent.
@@ -57,3 +57,9 @@ PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pul
 | Play reconciliation, pitching-only attribution and run-risk logic | needs review | b7be163c | flagged.html (published) | [MLB official rulings](https://www.mlb.com/official-information/scoring-changes) |
 
 These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/flagged.html and do not block the working site. No unsupported values are filled in.
+
+## Post-publication deployment follow-up
+- PR #3 merged successfully: https://github.com/snapquast73-boop/SCORCHNG/pull/3 (`efbf736e9f0609fa08f8274a9fa2bbda27cf26d4`). Its verification passed, but its custom deployment job failed after the optional settings-mutation step was introduced: https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801 . The inherited legacy deployment succeeded. Do not treat this run as a verified custom publication.
+- Reopened integration while repairing publication. Remove the optional settings mutation and restore the previously successful direct artifact deployment. Add an explicit barrier that waits for any legacy Pages workflow for the same commit to finish first, so generated official data cannot be overwritten afterward. This works without repository-settings administration.
+- Add a real-browser review-feed scan (all 15 games on the already verified 2026-09-11 date, with source-linked error rows) to the existing live browser scenario.
+- The sandbox's authenticated REST API quota was exhausted during final checks. GraphQL check queries and git transport remain usable. This is not an authentication failure and does not require the user to reconnect or provide credentials. The Actions job uses its own declared permissions.

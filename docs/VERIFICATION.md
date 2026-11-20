@@ -4,7 +4,7 @@ Review date: 2026-11-20. Session: b7be163c.
 
 ## Scope and evidence boundaries
 
-The initial commit contains ten root files only. Every uploaded file was read during this session. HTML references and the README were compared with the actual tracked tree. The missing runtime is newly implemented; it is **not** a recovered copy of the original. Neither exact appearance nor full upstream feature parity can be verified because both documented upstream repositories returned HTTP 404 and their Pages sites could not be fetched.
+The initial commit contains ten root files only. All uploaded file paths, HTML shells, instructions, license and server were inspected. HTML and README file references were compared with the actual tracked tree; inherited factual claims were not certified merely by reading them. The missing runtime is newly implemented; it is **not** a recovered copy of the original. Neither exact appearance nor full upstream feature parity can be verified because both documented upstream repositories returned HTTP 404 and their Pages sites could not be fetched.
 
 This is a source-code / deployment verification, not a certification of every sentence of the inherited 61 KB README. Its historical numbers and claims remain **unverified**, linked as immutable provenance rather than republished as current results in the README, and flagged on the public [Flagged for Review](../flagged.html) page. Missing numerical values remain blank. Official log text is reproduced, not corrected or converted into guessed deltas.
 
@@ -39,7 +39,7 @@ Each row links to GitHub’s authoritative uploaded source, or the publisher’s
 
 - `npm test`: runtime assertions (SYNTHETIC fixtures), HTML local asset/navigation resolution, JS syntax, storage namespace and per-row source links; Python official-text parser checks.
 - `node tools/build.mjs`: static output allowlist.
-- `node tools/live-check.mjs`: real official schedule, game and event-registry checks (requires MLB network access; run in GitHub Actions). Source URLs and check timestamps are saved as an artifact, never fake live values. CI also exercises real cross-origin MLB calls in Chromium.
+- `node tools/live-check.mjs`: real official schedule, game and event-registry checks (requires MLB network access; run in GitHub Actions). Source URLs and check timestamps are saved as an artifact, never fake live values. CI also exercises real cross-origin MLB scoreboard, game and full selected-date review-feed calls in Chromium.
 - `npm run test:browser`: Chromium checks under `/SCORCHNG/`, all core routes/tabs, mobile review page, missing-source states, source links and HTML escaping. Mock fixtures are explicitly SYNTHETIC and never published. The separate live browser scenario uses real official sources.
 - The sandbox cannot directly reach MLB/browser-download hosts or Actions artifact/log blob hosts. The fetch tool verified MLB schedule/game payloads and official scoring text; Actions performs reproducible full-source and browser checks with ordinary internet access.
 - No statement that “all external links work” is made: documented upstream links are known unavailable. Local HTML navigation and assets are checked automatically; arbitrary MLB video availability and every outbound link have not been independently confirmed.
@@ -47,3 +47,5 @@ Each row links to GitHub’s authoritative uploaded source, or the publisher’s
 The retained local server now hides private paths, safely rejects malformed paths, supports the project subpath and defaults shared writes to disabled. The legacy opt-in merge routine is not used or certified by this restoration.
 
 Deployment and PR results are recorded in [COORDINATION.md](../COORDINATION.md).
+
+The existing legacy Pages configuration is supported without administration changes. Before the verified artifact is deployed, the workflow waits for any legacy publisher for the same commit to finish, preventing that builder from overwriting generated official text.
