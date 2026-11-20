@@ -57,3 +57,7 @@ PR opened for automated checks: https://github.com/snapquast73-boop/SCORCHNG/pul
 | Play reconciliation, pitching-only attribution and run-risk logic | needs review | b7be163c | flagged.html (published) | [MLB official rulings](https://www.mlb.com/official-information/scoring-changes) |
 
 These review items are visible at https://snapquast73-boop.github.io/SCORCHNG/flagged.html and do not block the working site. No unsupported values are filled in.
+
+| Follow-up task | Status | Owner | File scope | Evidence |
+| --- | --- | --- | --- | --- |
+| Restore the verified Pages deployment path after the settings-update regression | in progress | 2824cb82 | .github/workflows/pages.yml, COORDINATION.md | [Failed deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829922801/job/136612418083#step:4:9), [Last successful deploy](https://github.com/snapquast73-boop/SCORCHNG/actions/runs/44829378311) |
